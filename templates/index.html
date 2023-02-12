@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Image Manager</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body>
+    <div class="app">
+        
+        <div class="form-section">
+            <div align="center">
+                <p><em>Current Directory</em></p>
+                <p>{{current_working_directory}}</p>
+            </div>
+            <form action="/md">
+                <input type="submit" value="New folder"/>
+                <input name="folder" type="text" value="new_folder"/>
+            </form>
+            <ul>
+            <li><a href="/cd?path=..">Back</a></li>
+            {% for item in file_list[0:] %}
+                {% if '.' not in item%}
+                    <li><strong><a href="/cd?path={{current_working_directory + '/' + item}}">{{item}}</a></strong><a href="/rm?dir={{item}}"> X</a></li>
+                {% elif '.txt' in item or '.py' in item or '.json' in item %}
+                    <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></li>
+                {% else %}
+                    <li>{{item}}</li>
+                {% endif%}
+            {% endfor %}
+            </ul>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+        <div class="images-section">
+            {% for image in images %}
+              <a href="{{ url_for('serve_image', filename=image) }}" target="_blank">
+              <img src="{{ url_for('serve_image', filename=image) }}"/>
+              </a>
+            {% endfor %}
+        </div>
+        
+    </div>
+</body>
+</html>

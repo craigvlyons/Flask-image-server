@@ -1,0 +1,7 @@
+Pipfile.lock
+uploads/*
+*.pyc
+.DS_Store
+static/stylescopy.css
+templates/indexcopy.html
+
