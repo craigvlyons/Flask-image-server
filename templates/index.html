@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Image Manager</title>
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px;') }}
     <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
 </head>
 <body>
@@ -31,10 +33,14 @@
                 {% endif%}
             {% endfor %}
             </ul>
-            <form action="/upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="file">
-                <input type="submit" value="Upload">
+            <form action="/upload">
+                <button type="button">Upload</button>
             </form>
+            <div>
+                {{ dropzone.create('/upload') }}
+                {{ dropzone.load_js() }}
+                {{ dropzone.config() }}
+            </div>
         </div>
         <div class="images-section">
             {% for image in images %}

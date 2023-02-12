@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, send_from_directory
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
+from flask_dropzone import Dropzone
 import os
 import subprocess
 import shutil
@@ -9,6 +10,11 @@ app = Flask(__name__)
 app.config['UPLOAD_DIRECTORY'] = 'uploads/'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB
 app.config['ALLOWED_EXTENSIONS'] = ['.jpg', '.jpeg', '.png', '.gif']
+app.config['DROPZONE_ALLOWED_FILE_TYPE'] = 'image'
+app.config['DROPZONE_MAX_FILE_SIZE'] = 3
+app.config['DROPZONE_MAX_FILES'] = 30
+
+dropzone = Dropzone(app)
 
 def current_folder_files() -> list:
     files = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n')
@@ -23,6 +29,17 @@ def get_images(files) -> list:
     return images
 
 
+@app.route('/upload', methods=['POST', 'GET'])
+def upload():
+    if request.method == 'POST':
+        for key, f in request.files.items():
+            if key.startswith('file'):
+                file_name = os.path.join(app.config['UPLOAD_DIRECTORY'], f.filename)
+                f.save(file_name)
+    
+    return redirect('/')
+
+
 @app.route('/')
 def index():
   curr_folder = app.config['UPLOAD_DIRECTORY']
@@ -34,26 +51,6 @@ def index():
   # pass images, current directory, and folder list to HTML page
   return render_template('index.html', images=images, current_working_directory=curr_folder, file_list=folders_list)
 
-@app.route('/upload', methods=['POST'])
-def upload():
-  try:
-    file = request.files['file']
-
-    if file:
-      extension = os.path.splitext(file.filename)[1].lower()
-
-      if extension not in app.config['ALLOWED_EXTENSIONS']:
-        return 'File is not an image.'
-        
-      file.save(os.path.join(
-        app.config['UPLOAD_DIRECTORY'],
-        secure_filename(file.filename)
-      ))
-  
-  except RequestEntityTooLarge:
-    return 'File is larger than the 16MB limit.'
-  
-  return redirect('/')
 
 @app.route('/serve-image/<filename>', methods=['GET'])
 def serve_image(filename):
