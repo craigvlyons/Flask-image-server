@@ -15,6 +15,7 @@
   }
   
   .header {
+    background-color: #080708;
     display: flex;
     max-width: 650;
     padding: 0 30px;
@@ -39,7 +40,7 @@
     line-height: 1.5;
     color: var(--white);
     background: var(--black);
-    background-image: linear-gradient(to bottom right, var(--almost-black), var(--black));
+    background-image: url('images/black_background.jpg');
   }
   
   .app {
@@ -67,11 +68,10 @@
     padding: 15px 0 0 15px;
     align-content: flex-start;
     flex-wrap: wrap;
-
   }
   
   .images-section a {
-    margin: 0 15px 15px 0;
+    margin: 6px 6px;
     padding-bottom: 20%;
     content: '';
     width: calc(33.33% - 15px);
@@ -144,4 +144,10 @@
     font-size: 20px;
   }
   
+  .footer {
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    background-color: #000000;
+  }
   
