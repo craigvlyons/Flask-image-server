@@ -19,23 +19,25 @@
     </header>
     <main class="app">
         <section class="form-section">
-            <form action="/md">
-                <input type="submit" value="New folder"/>
-                <input name="folder" type="text" value="new_folder"/>
+            <form class="form" action="/md">
+                <input class="form__input" type="submit" value="New folder"/>
+                <input class="submit" name="folder" type="text" placeholder="new_folder"/>
             </form>
-            <ul>
-                <li><a href="/cd?path=..">Back</a></li>
+            <ul class="folder__list">
+                <li><a href="/cd?path=.." class="folder__link">Back</a></li>
                 {% for item in file_list[0:] %}
                     {% if '.' not in item%}
-                        <li><strong><a href="/cd?path={{current_working_directory + '/' + item}}">{{item}}</a></strong><a href="/rm?dir={{item}}"> X</a></li>
+                        <li class="folder__item">
+                            <strong><a href="/cd?path={{current_working_directory + '/' + item}}" class="folder__link">{{item}}</a></strong>
+                        </li>
                     {% elif '.txt' in item or '.py' in item or '.json' in item %}
-                        <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></li>
+                        <li class="folder__item"><strong><a href="/view?file={{current_working_directory + '/' + item}}" class="folder__link">{{item}}</a></strong></li>
                     {% else %}
-                        <li>{{item}}</li>
+                        <li class="folder__item">{{item}}</li>
                     {% endif%}
                 {% endfor %}
             </ul>
-            <form action="/upload">
+            <form class="form" action="/upload">
                 <button type="button">Upload</button>
             </form>
             <div>
