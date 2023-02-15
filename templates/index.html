@@ -10,28 +10,30 @@
     <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
 </head>
 <body>
-    <div class="app">
-        
-        <div class="form-section">
-            <div align="center">
-                <p><em>Current Directory</em></p>
-                <p>{{current_working_directory}}</p>
-            </div>
+    <header class="header">
+        <h1>Image Storage</h1>
+        <ul class="header_folder">
+            <li class="header_item"><em>Current Directory</em></li>
+            <li class="header_item">{{current_working_directory}}</li>
+        </ul>
+    </header>
+    <main class="app">
+        <section class="form-section">
             <form action="/md">
                 <input type="submit" value="New folder"/>
                 <input name="folder" type="text" value="new_folder"/>
             </form>
             <ul>
-            <li><a href="/cd?path=..">Back</a></li>
-            {% for item in file_list[0:] %}
-                {% if '.' not in item%}
-                    <li><strong><a href="/cd?path={{current_working_directory + '/' + item}}">{{item}}</a></strong><a href="/rm?dir={{item}}"> X</a></li>
-                {% elif '.txt' in item or '.py' in item or '.json' in item %}
-                    <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></li>
-                {% else %}
-                    <li>{{item}}</li>
-                {% endif%}
-            {% endfor %}
+                <li><a href="/cd?path=..">Back</a></li>
+                {% for item in file_list[0:] %}
+                    {% if '.' not in item%}
+                        <li><strong><a href="/cd?path={{current_working_directory + '/' + item}}">{{item}}</a></strong><a href="/rm?dir={{item}}"> X</a></li>
+                    {% elif '.txt' in item or '.py' in item or '.json' in item %}
+                        <li><strong><a href="/view?file={{current_working_directory + '/' + item}}">{{item}}</a></strong></li>
+                    {% else %}
+                        <li>{{item}}</li>
+                    {% endif%}
+                {% endfor %}
             </ul>
             <form action="/upload">
                 <button type="button">Upload</button>
@@ -41,15 +43,15 @@
                 {{ dropzone.load_js() }}
                 {{ dropzone.config() }}
             </div>
-        </div>
-        <div class="images-section">
+        </section>
+        <section class="images-section">
             {% for image in images %}
               <a href="{{ url_for('serve_image', filename=image) }}" target="_blank">
               <img src="{{ url_for('serve_image', filename=image) }}"/>
               </a>
             {% endfor %}
-        </div>
+        </section>
         
-    </div>
+    </main>
 </body>
 </html>
