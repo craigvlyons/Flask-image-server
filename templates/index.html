@@ -14,7 +14,7 @@
         <h1>Image Storage</h1>
         <ul class="header_folder">
             <li class="header_item"><em>Current Directory</em></li>
-            <li class="header_item">{{current_working_directory}}</li>
+            <li class="header_item">{{current_folder}}</li>
         </ul>
     </header>
     <main class="app">
@@ -28,10 +28,10 @@
                 {% for item in file_list[0:] %}
                     {% if '.' not in item%}
                         <li class="folder__item">
-                            <strong><a href="/cd?path={{current_working_directory + '/' + item}}" class="folder__link">{{item}}</a></strong>
+                            <strong><a href="/cd?path={{current_folder + '/' + item}}" class="folder__link">{{item}}</a></strong>
                         </li>
                     {% elif '.txt' in item or '.py' in item or '.json' in item %}
-                        <li class="folder__item"><strong><a href="/view?file={{current_working_directory + '/' + item}}" class="folder__link">{{item}}</a></strong></li>
+                        <li class="folder__item"><strong><a href="/view?file={{current_folder + '/' + item}}" class="folder__link">{{item}}</a></strong></li>
                     {% else %}
                         <li class="folder__item">{{item}}</li>
                     {% endif%}
@@ -47,7 +47,7 @@
             </div>
         </section>
         <section class="images-section">
-            {% for image in images %}
+            {% for image in get_images(current_folder) %}
               <a href="{{ url_for('serve_image', filename=image) }}" target="_blank">
               <img src="{{ url_for('serve_image', filename=image) }}"/>
               </a>

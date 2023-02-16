@@ -7,7 +7,8 @@ import subprocess
 import shutil
 
 app = Flask(__name__)
-app.config['UPLOAD_DIRECTORY'] = 'uploads/'
+# app.config['UPLOAD_DIRECTORY'] = 'uploads/'
+app.config['UPLOAD_DIRECTORY'] = '/Users/macc/Pictures/'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB
 app.config['ALLOWED_EXTENSIONS'] = ['.jpg', '.jpeg', '.png', '.gif']
 app.config['DROPZONE_ALLOWED_FILE_TYPE'] = 'image'
@@ -20,13 +21,20 @@ def current_folder_files() -> list:
     files = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n')
     directories = [d for d in files if os.path.isdir(d)]
     return directories
-     
-def get_images(files) -> list:
-    images = []
-    for file in files:
-      if os.path.splitext(file)[1].lower() in app.config['ALLOWED_EXTENSIONS']:
-        images.append(file)
-    return images
+
+@app.context_processor
+def call_get_images():
+    def get_images(curr_folder) -> list:
+        images = []
+        files = os.listdir(curr_folder)
+        for file in files:
+            if os.path.splitext(file)[1].lower() in app.config['ALLOWED_EXTENSIONS']:
+                images.append(file)
+        print(images)
+        return images
+    
+    print("ran image maker")
+    return {"get_images": get_images}
 
 
 @app.route('/upload', methods=['POST', 'GET'])
@@ -43,13 +51,13 @@ def upload():
 @app.route('/')
 def index():
   curr_folder = app.config['UPLOAD_DIRECTORY']
-  files = os.listdir(curr_folder)
+  
   # get images to display
-  images = get_images(files)
+  # images = get_images(files)
   # get just the folders
   folders_list = current_folder_files()
   # pass images, current directory, and folder list to HTML page
-  return render_template('index.html', images=images, current_working_directory=curr_folder, file_list=folders_list)
+  return render_template('index.html', current_folder=curr_folder, file_list=folders_list)
 
 
 @app.route('/serve-image/<filename>', methods=['GET'])
