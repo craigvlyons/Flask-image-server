@@ -7,8 +7,7 @@ import subprocess
 import shutil
 
 app = Flask(__name__)
-# app.config['UPLOAD_DIRECTORY'] = 'uploads/'
-app.config['UPLOAD_DIRECTORY'] = '/Users/macc/Pictures/'
+app.config['UPLOAD_DIRECTORY'] = os.getcwd()
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB
 app.config['ALLOWED_EXTENSIONS'] = ['.jpg', '.jpeg', '.png', '.gif']
 app.config['DROPZONE_ALLOWED_FILE_TYPE'] = 'image'
@@ -17,10 +16,13 @@ app.config['DROPZONE_MAX_FILES'] = 30
 
 dropzone = Dropzone(app)
 
-def current_folder_files() -> list:
-    files = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n')
-    directories = [d for d in files if os.path.isdir(d)]
-    return directories
+@app.context_processor
+def get_folder_list():
+    def folder_list() -> list:
+        files = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n')
+        directories = [d for d in files if os.path.isdir(d)]
+        return directories
+    return {"folder_list": folder_list}
 
 @app.context_processor
 def call_get_images():
@@ -30,10 +32,8 @@ def call_get_images():
         for file in files:
             if os.path.splitext(file)[1].lower() in app.config['ALLOWED_EXTENSIONS']:
                 images.append(file)
-        print(images)
         return images
     
-    print("ran image maker")
     return {"get_images": get_images}
 
 
@@ -51,13 +51,9 @@ def upload():
 @app.route('/')
 def index():
   curr_folder = app.config['UPLOAD_DIRECTORY']
-  
-  # get images to display
-  # images = get_images(files)
-  # get just the folders
-  folders_list = current_folder_files()
-  # pass images, current directory, and folder list to HTML page
-  return render_template('index.html', current_folder=curr_folder, file_list=folders_list)
+
+  # pass current directory, and folder list to HTML page
+  return render_template('index.html', current_folder=curr_folder)
 
 
 @app.route('/serve-image/<filename>', methods=['GET'])
@@ -67,8 +63,9 @@ def serve_image(filename):
 # handle 'cd' command
 @app.route('/cd')
 def cd():
-    # run 'level up' command
+    # change directory to path passed from request
     os.chdir(request.args.get('path'))
+    # change upload folder to current directory.
     app.config['UPLOAD_DIRECTORY'] = os.getcwd()
     
     # redirect to file manager
@@ -83,7 +80,7 @@ def md():
     # redirect to fole manager
     return redirect('/')
 
-# handle 'make directory' command
+# handle 'remove directory' command
 @app.route('/rm')
 def rm():
     # remove certain directory
