@@ -11,11 +11,11 @@
 </head>
 <body>
     <header class="header">
-        <h1>Image Storage</h1>
-        <ul class="header_folder">
-            <li class="header_item"><em>Current Directory</em></li>
-            <li class="header_item">{{current_folder}}</li>
-        </ul>
+            <h1>Image Storage</h1>
+            <ul class="header_folder">
+                <li class="header_item"><em>Current Directory</em></li>
+                <li class="header_item">{{current_folder}}</li>
+            </ul>
     </header>
     <main class="app">
         <section class="form-section">
@@ -25,17 +25,19 @@
             </form>
             <ul class="folder__list">
                 <li><a href="/cd?path=.." class="folder__link">Back</a></li>
-                {% for item in folder_list() %}
-                    {% if '.' not in item%}
+                {% for folder in folder_list() %}
+                    {% if '.' not in folder %}
                         <li class="folder__item">
-                            <strong><a href="/cd?path={{current_folder + '/' + item}}" class="folder__link">{{item}}</a></strong>
+                            <a href="/cd?path={{current_folder + '/' + folder}}" class="folder__link">{{folder}}</a>
                         </li>
                         <!-- I dont accualy have the next line run beause i filter out everything
                         but folders, you can include (.txt, .py, .json) files to view -->
-                    {% elif '.txt' in item or '.py' in item or '.json' in item %}
-                        <li class="folder__item"><strong><a href="/view?file={{current_folder + '/' + item}}" class="folder__link">{{item}}</a></strong></li>
+                    {% elif '.txt' in folder or '.py' in folder or '.json' in folder %}
+                        <li class="folder__item">
+                            <a href="/view?file={{current_folder + '/' + folder}}" class="folder__link">{{folder}}</a>
+                        </li>
                     {% else %}
-                        <li class="folder__item">{{item}}</li>
+                        <!-- <li class="folder__item">{{folder}}</li> -->
                     {% endif%}
                 {% endfor %}
             </ul>
