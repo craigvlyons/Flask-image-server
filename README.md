@@ -6,6 +6,6 @@ This program was created to run on a local server so that my wife has a place to
 ![image](static/images/app-img.png)
 
 ### Folder menu
-Folders are pulled in from the computer or server that the flask website is running on. for a web deployment I would recommend a cloud database.
+Folders are pulled in from the computer or server that the flask website is running on. gunicorn is used for deplyment on my linux server.
 
 ![image](static/images/crop_img.png)
