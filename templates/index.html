@@ -41,8 +41,8 @@
                     {% endif%}
                 {% endfor %}
             </ul>
-            <form class="form" action="/upload">
-                <button type="button">Upload</button>
+            <form class="form" action="/upload" method="POST">
+                <button class="button" type="submit">Upload</button>
             </form>
             <div>
                 {{ dropzone.create('/upload') }}
@@ -52,8 +52,8 @@
         </section>
         <section class="images-section">
             {% for image in get_images(current_folder) %}
-              <a href="{{ url_for('serve_image', filename=image) }}" target="_blank">
-              <img src="{{ url_for('serve_image', filename=image) }}"/>
+              <a href="{{ url_for('pages.serve_image', filename=image) }}" target="_blank">
+              <img src="{{ url_for('pages.serve_image', filename=image) }}"/>
               </a>
             {% endfor %}
         </section>

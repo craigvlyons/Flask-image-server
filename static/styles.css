@@ -125,7 +125,7 @@
   }
   
   input[type='submit'],
-  button[type='button'] {
+  button[type='submit'] {
     padding: 5px 10px;
     font-size: 12px;
     font-weight: bold;
@@ -142,7 +142,7 @@
   }
   
   input[type='submit']:hover,
-  button[type='button']:hover {
+  button[type='submit']:hover {
     box-shadow: inset 0 -25px 25px var(--blue-light);
   }
 
